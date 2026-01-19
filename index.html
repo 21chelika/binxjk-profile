@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AU Space</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:
+    radial-gradient(circle at 20% 20%, #9ed9ff, transparent 40%),
+    radial-gradient(circle at 80% 30%, #7bb7e9, transparent 45%),
+    #5fa0db;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ===== APP ===== */
+.app{
+  width:1100px;
+  height:620px;
+  background:#fff;
+  border-radius:28px;
+  display:flex;
+  box-shadow:0 40px 80px rgba(0,0,0,.25);
+  overflow:hidden;
+  backdrop-filter: blur(14px);
+  background: linear-gradient(180deg,#ffffffee,#f6f9fcf2);
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:240px;
+  background:linear-gradient(180deg,#ffffff,#eef6fb);
+  padding:40px 24px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  box-shadow:inset -1px 0 0 rgba(0,0,0,.05);
+}
+
+.avatar{
+  width:90px;height:90px;border-radius:50%;
+  overflow:hidden;margin-bottom:14px;
+}
+.avatar img{width:100%;height:100%;object-fit:cover}
+
+.sidebar h2{
+  font-family:'Playfair Display',serif;
+  font-size:18px;
+  letter-spacing:.5px;
+}
+
+.menu a{
+  display:block;
+  padding:12px 14px;
+  border-radius:12px;
+  margin-bottom:8px;
+  color:#6b7a8a;
+  cursor:pointer;
+  transition:.35s ease;
+}
+.menu a.active{
+  background:#dff4ff;
+  color:#000;
+}
+
+.menu a:hover{
+  background:#e9f6ff;
+  transform:translateX(4px);
+}
+
+/* ===== MAIN ===== */
+.main{
+  flex:1;
+  padding:40px;
+  position:relative;
+  align-items:center;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ===== CONTENT ===== */
+.content{display:none;height:100%}
+.content.active{display:flex;align-items:center}
+
+/* ===== PROFILE ===== */
+#profile{
+  gap:60px;
+}
+#profile h2{
+  font-family:'Playfair Display',serif;
+  font-size:34px;
+}
+.desc{
+  max-width:420px;
+  line-height:1.8;
+}
+
+/* ===== AU SECTION ===== */
+#aus{
+  justify-content:center;
+}
+
+/* FRAME TETAP (INI KUNCI) */
+.carousel-frame{
+  width:780px;
+  height:420px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ROW */
+.au-carousel{
+  display:flex;
+  gap:36px;
+  align-items:center;
+}
+.desc em{
+  display:block;
+  font-style:italic;
+  color:#6b7a8a;
+}
+
+/* CARD */
+.au-card{
+  width:260px;
+  height:360px;
+  border-radius:26px;
+  overflow:hidden;
+  position:relative;
+  background:#000;
+  opacity:.45;
+  transform:scale(.9);
+  transition:
+    transform .6s cubic-bezier(.4,0,.2,1),
+    opacity .6s ease,
+    box-shadow .6s ease;
+    cursor:pointer;
+}
+.au-card:not(.active){
+  filter:blur(.4px);
+}
+
+.au-card img{
+  width:100%;height:100%;object-fit:cover;
+}
+.au-card::after{
+  content:'';
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.6),transparent);
+}
+.au-card::after,
+.au-card.active::before{
+  pointer-events:none;
+}
+
+
+/* AKTIF */
+.au-card.active{
+  opacity:1;
+  transform:scale(1.12);
+  box-shadow:
+    0 40px 80px rgba(0,0,0,.35),
+    0 0 60px rgba(106,215,255,.35);
+}
+
+.au-card.active::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at top,
+      rgba(255,255,255,.35),
+      transparent 60%);
+  pointer-events:none;
+}
+
+/* INFO */
+.au-info{
+  position:absolute;
+  bottom:20px;
+  left:20px;
+  right:20px;
+  color:#fff;
+  z-index:3;
+}
+
+.au-card:not(.active) .au-info{
+  opacity:.6;
+}
+
+.au-card.active .au-info{
+  opacity:1;
+}
+
+.au-card:hover .au-info{
+  transform:translateY(-4px);
+}
+
+.au-info{
+  transition:.35s ease;
+}
+
+.au-info h3{margin-bottom:4px}
+.au-btn{
+  display:inline-block;
+  padding:8px 18px;
+  border-radius:999px;
+  font-size:13px;
+  backdrop-filter:blur(12px);
+  background:rgba(255,255,255,.22);
+  border:1px solid rgba(255,255,255,.45);
+  transition:.35s ease;
+  text-decoration:none;
+  color:#fff;
+    position:relative;
+  z-index:5;
+  cursor:pointer;
+}
+
+.au-btn:active{
+  transform:scale(.95);
+}
+
+.au-btn:hover{
+  background:rgba(106,215,255,.55);
+  box-shadow:0 0 20px rgba(106,215,255,.6);
+  transform:translateY(-1px);
+}
+
+/* NAV */
+.nav{
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,.9);
+  backdrop-filter:blur(10px);
+  font-size:20px;
+  cursor:pointer;
+  transition:.3s ease;
+}
+.nav.prev{left:12px}
+.nav.next{right:12px}
+
+
+.nav:hover{
+  transform:scale(1.12);
+  box-shadow:0 16px 36px rgba(0,0,0,.25);
+}
+
+/* CONTACT */
+#contact{
+  align-items:flex-start;
+}
+.contact-list{
+  display:grid;
+  grid-template-columns:repeat(2,140px);
+  gap:14px;
+}
+.contact-list a{
+  padding:12px;
+  border-radius:14px;
+  background:#f1f1f1;
+  text-align:center;
+}
+@keyframes softIn{
+  from{
+    opacity:0;
+    transform:scale(.95);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+.content.active{
+  animation:softIn .6s ease;
+}
+.content.active{
+  flex:1;
+}
+
+.profile-box{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+  margin-bottom:48px;
+}
+.slider-viewport::before,
+.slider-viewport::after{
+  content:'';
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:70px;
+  z-index:3;
+  pointer-events:none;
+}
+
+.slider-viewport::before{
+  left:0;
+  background:linear-gradient(to right,#f6f9fc,transparent);
+}
+
+.slider-viewport::after{
+  right:0;
+  background:linear-gradient(to left,#f6f9fc,transparent);
+}
+
+.sidebar h2{
+  margin:0;
+}
+.slider-frame{
+  width:860px;
+  height:460px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.slider-viewport{
+  flex:1;
+  height:100%;
+  overflow:hidden;   /* POTONG ISI */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+
+.au-carousel{
+  display:flex;
+  gap:36px;
+  align-items:center;
+  transition:transform .7s cubic-bezier(.4,0,.2,1);
+  will-change:transform;
+}
+
+@keyframes softSlide{
+  from{
+    opacity:0;
+    transform:translateY(12px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.content.active{
+  animation:softSlide .6s ease;
+}
+
+.profile-content{
+  max-width:760px;
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+}
+
+.profile-content h2{
+  font-family:'Playfair Display',serif;
+  font-size:30px;
+}
+
+.profile-content .desc{
+  max-width:520px;
+  line-height:1.8;
+  color:#444;
+}
+
+/* GRID BOX */
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:18px;
+  margin-top:14px;
+}
+
+/* BOX */
+.info-box{
+  background:#ffffff;
+  border-radius:18px;
+  padding:20px 22px;
+  line-height:1.7;
+  font-size:14px;
+  box-shadow:0 12px 28px rgba(0,0,0,.08);
+}
+
+
+.info-box h3{
+  font-family:'Playfair Display',serif;
+  font-size:16px;
+  margin-bottom:8px;
+}
+
+/* WARNING STYLE */
+.info-box.warning{
+  border-left:4px solid #ff6b6b;
+  background:#fff;
+}
+
+/* CONTACT */
+.contact-wrapper{
+  max-width:720px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.contact-wrapper h2{
+  font-family:'Playfair Display',serif;
+  font-size:28px;
+}
+
+.contact-desc{
+  max-width:480px;
+  line-height:1.7;
+  color:#555;
+}
+
+/* GRID */
+.contact-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:16px;
+  margin-top:10px;
+}
+
+/* CARD */
+.contact-card{
+  background:
+    linear-gradient(180deg,#fff,#f8fbff),
+    repeating-linear-gradient(
+      45deg,
+      rgba(106,215,255,.04),
+      rgba(106,215,255,.04) 2px,
+      transparent 2px,
+      transparent 6px
+    );
+  border-radius:18px;
+  padding:18px 20px;
+  box-shadow:0 12px 30px rgba(0,0,0,.08);
+    text-decoration:none;
+  color:inherit;
+}
+.contact-card *{
+  text-decoration:none;
+}
+
+.contact-title::before{
+  content:'✦';
+  margin-right:8px;
+  color:#6ad7ff;
+  opacity:.8;
+}
+
+
+
+.contact-card:nth-child(2){animation-delay:.05s}
+.contact-card:nth-child(3){animation-delay:.1s}
+.contact-card:nth-child(4){animation-delay:.15s}
+.contact-card:nth-child(5){animation-delay:.2s}
+.contact-card:nth-child(6){animation-delay:.25s}
+
+@keyframes fadeUp{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+.contact-card:hover .contact-title{
+  letter-spacing:.6px;
+}
+
+.contact-card:hover .contact-sub{
+  color:#445;
+}
+.contact-card.support .contact-title{
+  color:#2b7cff;
+}
+
+.contact-card:hover{
+  transform:translateY(-4px);
+  box-shadow:
+    0 20px 45px rgba(0,0,0,.18),
+    0 0 24px rgba(106,215,255,.35);
+    border-left-color:#6ad7ff;
+}
+.contact-card.support:hover{
+  box-shadow:
+    0 20px 45px rgba(0,0,0,.18),
+    0 0 28px rgba(106,215,255,.35);
+}
+
+/* TEXT */
+.contact-title{
+  font-family:'Playfair Display',serif;
+  font-size:17px;
+  font-weight:500;
+  letter-spacing:.3px;
+  color:#0f1720;
+  text-transform:none;
+}
+
+
+.contact-sub{
+  font-size:13px;
+  color:#6b7a8a;
+  font-style:italic;
+  line-height:1.6;
+}
+
+
+/* SUPPORT HIGHLIGHT */
+.contact-card.support{
+  border:1px solid rgba(106,215,255,.4);
+  background:linear-gradient(
+    180deg,
+    rgba(255,255,255,.85),
+    rgba(240,250,255,.85)
+  );
+    box-shadow:
+    0 20px 45px rgba(0,0,0,.18),
+    0 0 24px rgba(106,215,255,.35);
+}
+
+.contact-wrapper::before{
+  content:'';
+  width:60px;
+  height:2px;
+  margin-bottom:8px;
+}
+.contact-card.support::after{
+  content:'✦';
+  position:absolute;
+  top:14px;
+  right:16px;
+  font-size:12px;
+  opacity:.5;
+}
+.contact-tag{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#6ad7ff;
+}
+.app{
+  animation:appIn .8s ease;
+}
+
+@keyframes appIn{
+  from{
+    opacity:0;
+    transform:scale(.98);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+
+@media (max-width: 768px){
+.sidebar{
+    width:100%;
+    flex-direction:row;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 16px;
+    box-shadow:none;
+  }
+
+  .profile-box{
+    flex-direction:row;
+    gap:8px;
+    margin:0;
+  }
+
+  .avatar{
+    width:38px;
+    height:38px;
+  }
+
+  .sidebar h2{
+    font-size:14px;
+  }
+
+  .menu{
+    display:flex;
+    gap:6px;
+  }
+
+  .menu a{
+    padding:6px 10px;
+    font-size:12px;
+  }
+  .app{
+    width:100%;
+    min-height:100vh;
+    height:auto;
+    border-radius:0;
+    flex-direction:column;
+  }
+
+  body{
+    align-items:flex-start;
+  }
+  .main{
+    padding:18px 16px;
+  }
+
+  .content{
+    align-items:flex-start;
+  }
+    .profile-content{
+    max-width:100%;
+  }
+  .profile-content h2{
+    font-size:22px;
+  }
+
+  .profile-content .desc{
+    font-size:14px;
+  }
+
+  .info-grid{
+    grid-template-columns:1fr;
+  }
+  .slider-frame{
+    width:100%;
+    height:380px;
+  }
+
+  .au-card{
+    width:210px;
+    height:300px;
+  }
+
+  .au-card.active{
+    transform:scale(1.03);
+  }
+
+  .nav{
+    width:34px;
+    height:34px;
+    font-size:16px;
+  }
+  .contact-grid{
+    grid-template-columns:1fr;
+  }
+  .contact-wrapper{
+    max-width:100%;
+  }
+  .contact-wrapper h2{
+    font-size:24px;
+  }
+
+  .contact-desc{
+    font-size:14px;
+  }
+    .contact-card{
+    padding:16px;
+  }
+}
+@media (max-width:480px){
+  .au-intro{
+    font-size:13px;
+    padding:0 10px;
+  }
+}
+
+.section-divider{
+  width:80px;
+  height:3px;
+  border-radius:999px;
+  background:linear-gradient(
+    to right,
+    #6ad7ff,
+    rgba(106,215,255,.2)
+  );
+  margin:12px 0 6px;
+}
+
+a, button{
+  cursor:pointer;
+}
+
+.au-card{
+  cursor:grab;
+}
+.au-card:active{
+  cursor:grabbing;
+}
+.site-footer{
+  font-size:11px;
+  color:#9aa7b5;
+  margin-top:18px;
+  text-align:center;
+  opacity:.8;
+}
+.site-footer span{
+  letter-spacing:.04em;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+<div class="profile-box">
+  <div class="avatar">
+    <img src="binxjk.jpg">
+  </div>
+  <h2>DIRA</h2>
+</div>
+
+    <nav class="menu">
+      <a class="active" data-target="profile">Profile</a>
+      <a data-target="aus">AU's</a>
+      <a data-target="contact">Contact</a>
+    </nav>
+  </aside>
+
+  <main class="main">
+
+    <!-- PROFILE -->
+<section class="content active" id="profile">
+  <div class="profile-content">
+
+    <h2>About Dira</h2>
+<div class="section-divider"></div>
+
+<p class="desc">
+  Hi, I’m Dira. I’m a writer who mainly writes emotional Alternate Universe stories,
+  focusing on intimacy, longing, and complex dynamics.
+  <br><br>
+  <em>Fictional dynamics, fictional feelings — always written with intention.</em>
+</p>
+
+
+    <div class="info-grid">
+
+      <div class="info-box">
+        <h3>Writer Identity</h3>
+        <p>
+          AU writer for <strong>ENHYPEN</strong>, mostly writing
+          <strong>Hoonseung</strong> and <strong>Heehoon</strong>,
+          but generally comfortable with all pairings.
+          <br><br>
+          I write slow burn, dark romance, emotional tension,
+          and character-driven stories.
+        </p>
+      </div>
+
+      <div class="info-box">
+        <h3>Before You Follow</h3>
+        <p>
+          Please make sure you are comfortable with
+          <strong>NSFW themes</strong> and discussions that may include
+          sensitive or mature topics.
+          <br><br>
+          My writing often explores emotional complexity and fictional dynamics.
+        </p>
+      </div>
+
+      <div class="info-box warning">
+        <h3>Do Not Interact If</h3>
+        <p>
+          • You are <strong>under 18 / a minor</strong><br>
+          • You are <strong>homophobic</strong><br>
+          • You excessively police ships or fictional content<br>
+          • You are uncomfortable with sensitive or mature themes
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+    <!-- AU -->
+
+<section class="content" id="aus">
+
+  <div class="slider-frame">
+
+    <button class="nav prev">‹</button>
+
+    <div class="slider-viewport">
+      <div class="au-carousel">
+        <div class="au-card active">
+            <img src="hoonseung.png">
+            <div class="au-info">
+              <h3>Hoonseung AU</h3>
+              <a
+  href="https://x.com/binxjk/status/1912573849440514071?s=20"
+  target="_blank"
+  class="au-btn"
+>
+  View
+</a>
+
+            </div>
+          </div>
+
+          <div class="au-card ">
+            <img src="heehoon.png">
+            <div class="au-info">
+              <h3>Heehoon AU</h3>
+              <a
+  href="https://x.com/binxjk/status/1912573303463768117?s=20"
+  target="_blank"
+  class="au-btn"
+>
+  View
+</a>
+            </div>
+          </div>
+
+          <div class="au-card ">
+            <img src="jayke.png">
+            <div class="au-info">
+              <h3>Jayke AU</h3>
+              <a
+  href="hhttps://x.com/binxjk/status/1912574158736855192?s=20"
+  target="_blank"
+  class="au-btn"
+>
+  View
+</a>
+            </div>
+          </div>
+                    <div class="au-card ">
+            <img src="others.png">
+            <div class="au-info">
+              <h3>Other</h3>
+              <a
+  href="https://x.com/binxjk/status/1912574547532103936?s=20"
+  target="_blank"
+  class="au-btn"
+>
+  View
+</a>
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <button class="nav next">›</button>
+
+  </div>
+
+</section>
+
+
+    <!-- CONTACT -->
+<section class="content" id="contact">
+  <div class="contact-wrapper">
+
+    <h2>Connect With Me</h2>
+<p class="contact-desc">
+  For updates, conversations, and ways to support my writing journey.
+</p>
+
+
+    <div class="contact-grid">
+
+      <a href="https://x.com/binxjk" target="_blank" class="contact-card">
+        <span class="contact-title">Twitter / X</span>
+        <span class="contact-sub">AU updates & thoughts</span>
+      </a>
+
+      <a href="https://instagram.com/USERNAME" target="_blank" class="contact-card">
+        <span class="contact-title">Instagram</span>
+        <span class="contact-sub">Visuals & snippets</span>
+      </a>
+
+      <a href="https://tiktok.com/@USERNAME" target="_blank" class="contact-card">
+        <span class="contact-title">TikTok</span>
+        <span class="contact-sub">Short content</span>
+      </a>
+
+      <a href="https://tellonym.me/t.binxjk" target="_blank" class="contact-card">
+        <span class="contact-title">Tellonym</span>
+        <span class="contact-sub">Anonymous questions</span>
+      </a>
+
+      <a href="https://alterspring.org/@dira" target="_blank" class="contact-card">
+        <span class="contact-title">Alterspring</span>
+        <span class="contact-sub">Anonymous questions</span>
+      </a>
+
+      <a href="https://ko-fi.com/dirabinxjk" target="_blank" class="contact-card support">
+        <span class="contact-title">Ko-fi</span>
+        <span class="contact-sub">Support my writing</span>
+      </a>
+
+      <a href="https://trakteer.id/binxjk" target="_blank" class="contact-card support">
+        <span class="contact-title">Trakteer</span>
+        <span class="contact-sub">Support my writing</span>
+      </a>
+
+      <a href="https://karyakarsa.com/binxjk/posts" target="_blank" class="contact-card support">
+        <span class="contact-title">Karyakarsa</span>
+        <span class="contact-sub">Exclusive content</span>
+      </a>
+
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <span>© Dira — binxjk</span>
+</footer>
+
+
+  </main>
+</div>
+
+<script>
+/* ===== TAB SWITCH ===== */
+document.querySelectorAll('.menu a').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.menu a').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.content').forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.target).classList.add('active');
+  }
+});
+
+/* ===== CAROUSEL ===== */
+const carousel = document.querySelector('.au-carousel');
+const cards = document.querySelectorAll('.au-card');
+const viewport = document.querySelector('.slider-viewport');
+const prevBtn = document.querySelector('.nav.prev');
+const nextBtn = document.querySelector('.nav.next');
+
+let current = 0;
+const gap = 36;
+const cardWidth = 260 + gap;
+
+function updateCarousel(){
+  cards.forEach((card,i)=>{
+    card.classList.remove('active','prev','next');
+
+    if(i === current) card.classList.add('active');
+    else if(i === current - 1) card.classList.add('prev');
+    else if(i === current + 1) card.classList.add('next');
+  });
+
+  const offset =
+    viewport.offsetWidth / 2 -
+    (current * cardWidth) -
+    cardWidth / 2;
+
+  carousel.style.transform = `translateX(${offset}px)`;
+}
+
+nextBtn.onclick = ()=>{
+  current = (current + 1) % cards.length;
+  updateCarousel();
+};
+
+prevBtn.onclick = ()=>{
+  current = (current - 1 + cards.length) % cards.length;
+  updateCarousel();
+};
+
+/* INIT */
+updateCarousel();
+</script>
+</body>
+</html>
