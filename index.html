@@ -342,6 +342,7 @@ body{
   align-items:center;
   justify-content:center;
   position:relative;
+  touch-action: pan-y;
 }
 
 .au-carousel{
@@ -758,7 +759,7 @@ a, button{
   Hi, I’m Dira. I’m a writer who mainly writes emotional Alternate Universe stories,
   focusing on intimacy, longing, and complex dynamics.
   <br><br>
-  <em>Fictional dynamics, fictional feelings — always written with intention.</em>
+  <em>“𝑩𝒓𝒊𝒏𝒈 𝒚𝒐𝒖𝒓 𝒍𝒐𝒗𝒆, 𝒃𝒂𝒃𝒚, 𝐼 𝑐𝑜𝑢𝑙𝑑 𝑏𝑟𝑖𝑛𝑔 𝑚𝑦 𝑠ℎ𝑎𝑚𝑒.” — 𝘳𝘱𝘴 𝘢𝘶𝘵𝘩𝘰𝘳 ²¹⁺ </em>
 </p>
 
 
@@ -994,6 +995,34 @@ prevBtn.onclick = ()=>{
 
 /* INIT */
 updateCarousel();
+
+/* ===== TOUCH SWIPE (MOBILE) ===== */
+let startX = 0;
+let isDragging = false;
+
+carousel.addEventListener("touchstart", (e) => {
+  startX = e.touches[0].clientX;
+  isDragging = true;
+});
+
+carousel.addEventListener("touchend", (e) => {
+  if (!isDragging) return;
+
+  const endX = e.changedTouches[0].clientX;
+  const diff = startX - endX;
+
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) {
+      current = (current + 1) % cards.length;
+    } else {
+      current = (current - 1 + cards.length) % cards.length;
+    }
+    updateCarousel();
+  }
+
+  isDragging = false;
+});
+
 </script>
 </body>
 </html>
